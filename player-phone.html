@@ -1,0 +1,69 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="player-phone">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <video id="videoPlayer" width="100%" controls 
+    on-play="whenPlay" on-pause="whenPause" on-ended="detailPlayer">
+      <source src="[[videoSource]]" type="video/mp4" />
+      Tu navegador no soporta este elemento.
+    </video>
+  </template>
+
+  <script>
+    /**
+     * `player-phone`
+     * simulation player phone
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class PlayerPhone extends Polymer.Element {
+      static get is() { return 'player-phone'; }
+      static get properties() {
+        return {
+          videoSource: {
+            type: String,
+            value: ''
+          },
+          refreshProgress: {
+            type: Event,
+            value: () => {}
+          }
+        }
+      }
+
+      whenPlay(){
+        this.refreshProgress = setInterval(this.detailPlayer, 3000,this.$.videoPlayer);
+      }
+
+      whenPause(){
+        clearInterval(this.refreshProgress);
+      }
+
+      detailPlayer(player){
+        this.dispatchEvent(new CustomEvent("progress-play",{
+          bubbles: false,
+          composed: false,
+          detail: { duration: player.duration, current: player.currentTime }
+        }));
+      }
+
+      endPlay(){
+        const videoState = this.$.videoPlayer;
+        this.dispatchEvent(new CustomEvent("end-play",{
+          bubbles: false,
+          composed: false,
+          detail: { ended: videoState.ended }
+        }));
+      }
+    }
+
+    window.customElements.define(PlayerPhone.is, PlayerPhone);
+  </script>
+</dom-module>

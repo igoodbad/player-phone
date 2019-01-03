@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>player-phone demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../player-phone.html">
+
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </custom-style>
+</head>
+
+<body>
+  <div class="vertical-section-container centered">
+    <h3>Basic player-phone demo</h3>
+    <demo-snippet>
+      <template>
+        <player-phone id="video-player" video-source="Slow Dance With You.mp4" ></player-phone>
+      </template>
+      <script>
+          const playerComponent = document.querySelector("player-phone");
+          console.log(playerComponent);
+          playerComponent.addEventListener("progress-play", event =>{
+            console.log(event);
+          })
+        </script>
+    </demo-snippet>
+    
+  </div>
+</body>
+
+</html>
