@@ -7,8 +7,8 @@
         display: block;
       }
     </style>
-    <video id="videoPlayer" width="100%" controls 
-    on-play="whenPlay" on-pause="whenPause" on-ended="detailPlayer">
+    <video id="videoPlayer" width="100%" controls on-canplay="detailPlayer" on-play="whenPlay" on-pause="whenPause"
+      on-ended="endPlay">
       <source src="[[videoSource]]" type="video/mp4" />
       Tu navegador no soporta este elemento.
     </video>
@@ -33,34 +33,49 @@
           },
           refreshProgress: {
             type: Event,
-            value: () => {}
+            value: () => { }
           }
         }
       }
 
-      whenPlay(){
-        this.refreshProgress = setInterval(this.detailPlayer, 3000,this.$.videoPlayer);
+      whenPlay() {
+        this.refreshProgress = setInterval(() => {
+          this.dispatchEvent(new CustomEvent("status-play", {
+            bubbles: false,
+            composed: false,
+            detail: { current: this.$.videoPlayer.currentTime }
+          }));
+        }, 1000);
       }
 
-      whenPause(){
+      whenPause() {
         clearInterval(this.refreshProgress);
       }
 
-      detailPlayer(player){
-        this.dispatchEvent(new CustomEvent("progress-play",{
+      detailPlayer() {
+        this.dispatchEvent(new CustomEvent("detail-play", {
           bubbles: false,
           composed: false,
-          detail: { duration: player.duration, current: player.currentTime }
+          detail: { duration: this.$.videoPlayer.duration }
         }));
       }
-
-      endPlay(){
-        const videoState = this.$.videoPlayer;
-        this.dispatchEvent(new CustomEvent("end-play",{
+/*
+      statusPlayer(player) {
+        //console.log(player.currentTime);
+        this.dispatchEvent(new CustomEvent("status-play", {
           bubbles: false,
           composed: false,
-          detail: { ended: videoState.ended }
+          detail: { current: player.currentTime }
         }));
+      }
+*/
+      endPlay() {
+        this.dispatchEvent(new CustomEvent("end-play", {
+          bubbles: false,
+          composed: false,
+          detail: { ended: this.$.videoPlayer.ended }
+        }));
+        this.whenPause();
       }
     }
 
